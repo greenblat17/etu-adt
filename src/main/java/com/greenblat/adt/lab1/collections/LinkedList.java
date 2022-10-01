@@ -39,17 +39,7 @@ public class LinkedList<E> implements List<E>, Stack<E> {
 
     @Override
     public E pop() {
-        if (head == null)
-            throw new EmptyStackException();
-
-        E result = head.value;
-        Node<E> temp = head;
-        temp = null;
-        head = head.next;
-
-        size--;
-
-        return result;
+        return remove(0);
     }
 
     @Override
@@ -129,17 +119,28 @@ public class LinkedList<E> implements List<E>, Stack<E> {
 
     @Override
     public E remove(int index) {
-        int currIdx = -1;
-        Node<E> temp = new Node<>(null, head);
-        while (temp.next != null) {
-            if (currIdx + 1 == index) {
-                temp.next = temp.next.next;
+        if (index == 0) {
+            E result = head.value;
+            head = head.next;
+            size--;
+            return result;
+        }
+
+        Node<E> previous = null;
+        int currIdx = 0;
+        Node<E> temp = head;
+        while (temp != null) {
+            if (currIdx == index) {
+                E result = temp.value;;
+                previous.next = temp.next;
                 size--;
-                return temp.value;
+                return result;
             }
 
+            previous = temp;
             temp = temp.next;
             currIdx++;
+
         }
 
         throw new IndexOutOfBoundsException(index);
