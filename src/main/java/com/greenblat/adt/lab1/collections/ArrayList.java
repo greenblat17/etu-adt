@@ -53,10 +53,19 @@ public class ArrayList<E> implements List<E> {
 
     @Override
     public boolean add(E e, int index) {
-        if (index < 0 || index >= size)
+        if (index < 0 || index > size)
             throw new IndexOutOfBoundsException(index);
 
+        if (size == values.length) {
+            values = Arrays.createNewArrayWithCopy(values);
+        }
+
+        for (int i = size; i > index; i--) {
+            values[i] = values[i - 1];
+        }
         values[index] = e;
+
+        size++;
         return true;
     }
 
@@ -105,19 +114,10 @@ public class ArrayList<E> implements List<E> {
 
     @Override
     public E set(int index, E element) {
-        if (index < 0 || index > size)
+        if (index < 0 || index >= size)
             throw new IndexOutOfBoundsException(index);
 
-        if (size == values.length) {
-            values = Arrays.createNewArrayWithCopy(values);
-        }
-
-        for (int i = size; i > index; i--) {
-            values[i] = values[i - 1];
-        }
         values[index] = element;
-
-        size++;
         return element;
     }
 
