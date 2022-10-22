@@ -1,5 +1,7 @@
 package com.greenblat.adt.lab1.collections;
 
+import com.greenblat.adt.lab1.utils.Arrays;
+
 /**
  * Изначальный список: []
  * Вызвал метод add в цикле for 10 раз: [ 0 1 2 3 4 5 6 7 8 9 ]
