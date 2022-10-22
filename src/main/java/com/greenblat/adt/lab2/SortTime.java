@@ -1,45 +1,37 @@
 package com.greenblat.adt.lab2;
 
+import com.greenblat.adt.lab1.collections.ArrayList;
+import com.greenblat.adt.lab1.collections.List;
 import com.greenblat.adt.lab2.sorts.InsertionSort;
 import com.greenblat.adt.lab2.sorts.MergeSort;
+import com.greenblat.adt.lab2.sorts.Sort;
 import com.greenblat.adt.lab2.sorts.TimSort;
 
-import java.util.ArrayList;
-import java.util.List;
 import java.util.Random;
 
 public class SortTime {
     public static void main(String[] args) {
-
         System.out.println("Testing ArrayList");
         List<Integer> list = new ArrayList<>();
-//        timeSort(list, 1000);
-//        timeSort(list, 10000);
-        timeSort(list, 100000);
+
+        Sort<Integer> timSort = new TimSort<>(list);
+        Sort<Integer> mergeSort = new MergeSort<>(list);
+        Sort<Integer> insertionSort = new InsertionSort<>(list);
+
+        timeOfSoringList(list, 1000000, timSort);
+        timeOfSoringList(list, 1000000, mergeSort);
+//        timeOfSoringList(list, 1000000, insertionSort);
 
     }
 
-    private static void timeSort(List<Integer> arrayList, int count) {
-        addElementsToList(arrayList, count);
+
+    private static void timeOfSoringList(List<Integer> list, int countElements, Sort<Integer> sortingList) {
+        addElementsToList(list, countElements);
         long start = System.currentTimeMillis();
-        new TimSort<>(arrayList).sort();
+        sortingList.sort();
         long end  = System.currentTimeMillis();
-        System.out.println("TimSort time: " + (end - start));
-        arrayList.clear();
-
-        addElementsToList(arrayList, count);
-        start = System.currentTimeMillis();
-        new MergeSort<>(arrayList).sort(0, arrayList.size() / 2, arrayList.size() - 1);
-        end  = System.currentTimeMillis();
-        System.out.println("MergeSort time: " + (end - start));
-        arrayList.clear();
-
-        addElementsToList(arrayList, count);
-        start = System.currentTimeMillis();
-        new InsertionSort<>(arrayList).sort(0, arrayList.size() - 1);
-        end  = System.currentTimeMillis();
-        System.out.println("InsertionSort time: " + (end - start));
-        arrayList.clear();
+        System.out.println("Time: " + (end - start));
+        list.clear();
     }
 
     private static void addElementsToList(List<Integer> list, int countElements) {

@@ -1,9 +1,9 @@
 package com.greenblat.adt.lab2.sorts;
 
 
-import java.util.List;
+import com.greenblat.adt.lab1.collections.List;
 
-public class InsertionSort<T extends Comparable<T>>{
+public class InsertionSort<T extends Comparable<T>> implements Sort<T> {
 
     private final List<T> arr;
 
@@ -11,15 +11,22 @@ public class InsertionSort<T extends Comparable<T>>{
         this.arr = arr;
     }
 
-    public void sort(int start, int end) {
-        for (int i = start; i <= end; i++) {
-            int j = i;
-            while (j > 0 && arr.get(j).compareTo(arr.get(j - 1)) < 0) {
-                T temp = arr.get(j);
-                arr.set(j, arr.get(j - 1));
-                arr.set(j - 1, temp);
+    @Override
+    public void sort() {
+        insertionSort(0, arr.size() - 1);
+    }
+
+    public void insertionSort(int start, int end) {
+        for (int i = start + 1; i <= end; i++) {
+            int j = i - 1;
+
+            T selected = arr.get(i);
+            int loc = binarySearch(selected, start, j);
+            while (j >= loc) {
+                arr.set(j + 1, arr.get(j));
                 j--;
             }
+            arr.set(j + 1, selected);
         }
     }
 
