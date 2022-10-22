@@ -1,6 +1,6 @@
 package com.greenblat.adt.lab1.collections;
 
-import com.greenblat.adt.lab1.utils.Arrays;
+import com.greenblat.adt.lab1.collections.utils.Arrays;
 
 /**
  * Изначальный список: []

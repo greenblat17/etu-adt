@@ -1,4 +1,4 @@
-package com.greenblat.adt.lab1.utils;
+package com.greenblat.adt.lab1.collections.utils;
 
 public class Arrays {
     private static final double MULTIPLY_COEFFICIENT = 1.5;

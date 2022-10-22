@@ -1,4 +1,4 @@
-package com.greenblat.adt.lab1.utils;
+package com.greenblat.adt.lab1.collections.utils;
 
 
 import com.greenblat.adt.lab1.collections.List;
