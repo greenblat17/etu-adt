@@ -45,7 +45,7 @@ public class LinkedList<E> implements List<E>, Stack<E> {
     @Override
     public E peek() {
         if (head == null)
-            return null;
+            throw new EmptyStackException();
 
         return head.value;
     }
