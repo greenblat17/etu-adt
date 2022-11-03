@@ -1,7 +1,7 @@
 package com.greenblat.adt.lab2.sorts;
 
 import com.greenblat.adt.lab1.collections.List;
-import com.greenblat.adt.lab1.utils.Collections;
+import com.greenblat.adt.lab1.collections.utils.Collections;
 
 
 public class MergeSort<T extends Comparable<T>> implements Sort<T> {
@@ -28,8 +28,18 @@ public class MergeSort<T extends Comparable<T>> implements Sort<T> {
     }
 
     void merge(int low, int middle, int high) {
-        T[] leftArray = Collections.copyToArrays(arr, low, middle - low + 1);
-        T[] rightArray = Collections.copyToArrays(arr, middle + 1, high - middle);
+        T[] leftArray = (T[]) new Comparable[middle - low + 1];
+        T[] rightArray = (T[]) new Comparable[high - middle];
+
+
+        int countToCopy = low;
+        for (int i = 0; i < leftArray.length; i++) {
+            leftArray[i] = arr.get(countToCopy++);
+        }
+        countToCopy = middle + 1;
+        for (int i = 0; i < rightArray.length; i++) {
+            rightArray[i] = arr.get(countToCopy++);
+        }
 
         int leftSubArrCounter = 0;
         int rightSubArrCounter = 0;

@@ -3,8 +3,9 @@ package com.greenblat.adt.lab1.collections;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.Test;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertNull;
+import java.util.EmptyStackException;
+
+import static org.junit.jupiter.api.Assertions.*;
 
 class StackTest {
 
@@ -32,7 +33,7 @@ class StackTest {
         stack.pop();
         stack.pop();
 
-        assertNull(stack.peek());
+        assertThrows(EmptyStackException.class, stack::peek);
     }
 
     @Test
@@ -48,7 +49,7 @@ class StackTest {
             stack.pop();
         }
 
-        assertNull(stack.pop());
+//        assertThrows(stack.pop());
     }
 
 }

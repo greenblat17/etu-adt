@@ -13,4 +13,12 @@ public class Collections {
         }
         return copyArray;
     }
+
+    public static <T extends Comparable<T>> void reverseList(List<T> arr, int start, int end) {
+        for (int i = 0; i < (end - start) / 2; i++) {
+            T tmp = arr.get(start + i);
+            arr.set(start + i, arr.get(end - i - 1));
+            arr.set(end - i - 1, tmp);
+        }
+    }
 }

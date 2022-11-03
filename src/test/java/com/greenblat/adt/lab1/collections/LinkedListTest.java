@@ -44,11 +44,11 @@ class LinkedListTest {
         assertThrows(IndexOutOfBoundsException.class, () -> list.remove(123));
 
         list.remove(0);
-        assertEquals(1, list.get(1));
+        assertEquals(1, list.get(0));
 
         assertTrue(list.remove((Object) 2));
         assertFalse(list.remove((Object) 123));
-        assertTrue(list.remove((Object) 0));
+        assertTrue(list.remove((Object) 1));
     }
 
 
@@ -63,11 +63,9 @@ class LinkedListTest {
         list.set(3, 4);
 
         assertEquals(4, list.get(3));
-        assertEquals(3, list.get(4));
 
         list.set(0, -5);
         assertEquals(-5, list.get(0));
-        assertEquals(0, list.get(1));
     }
 
     @Test
