@@ -18,12 +18,6 @@ public class TestSort {
         System.out.println("Testing TimSort");
         testSortingElement(list, timSort);
 
-//
-//        for (int i = 50; i >= 0; i--) {
-//            list1.add(i);
-//        }
-//        timSort.reverseList(0, list1.size() - 1);
-//        System.out.println(list1);
 
 //        System.out.println("Testing MergeSort");
 //        testSortingElement(list, mergeSort);
@@ -34,7 +28,7 @@ public class TestSort {
 
     private static void testSortingElement(List<Integer> list, Sort<Integer> sortingElement) {
         Random random = new Random();
-        for (int i = 0; i < 100000; i++) {
+        for (int i = 0; i < 1000000; i++) {
             list.add(random.nextInt(100));
         }
         System.out.println("Before sorting");
@@ -45,7 +39,7 @@ public class TestSort {
 
         for (int i = 0; i < list.size() - 1; i++) {
             if (list.get(i) > list.get(i + 1)) {
-                System.out.println("!");
+                System.out.print("!");
             }
         }
 
