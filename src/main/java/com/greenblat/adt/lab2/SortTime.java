@@ -18,9 +18,11 @@ public class SortTime {
         Sort<Integer> mergeSort = new MergeSort<>(list);
         Sort<Integer> insertionSort = new InsertionSort<>(list);
 
+//        timeOfSoringList(list, 100, timSort);
+//        timeOfSoringList(list, 1000, timSort);
+//        timeOfSoringList(list, 10000, timSort);
+//        timeOfSoringList(list, 100000, timSort);
         timeOfSoringList(list, 1000000, timSort);
-        timeOfSoringList(list, 1000000, mergeSort);
-//        timeOfSoringList(list, 1000000, insertionSort);
 
     }
 

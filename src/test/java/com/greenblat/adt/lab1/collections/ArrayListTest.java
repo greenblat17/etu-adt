@@ -59,7 +59,6 @@ class ArrayListTest {
         list.set(3, 4);
 
         assertEquals(4, list.get(3));
-        assertEquals(3, list.get(4));
     }
 
     @Test

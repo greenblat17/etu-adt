@@ -1,19 +1,14 @@
 package com.greenblat.adt.lab2.sorts;
 
 
-import com.greenblat.adt.lab1.collections.LinkedList;
 import com.greenblat.adt.lab1.collections.List;
-import com.greenblat.adt.lab1.collections.Stack;
-import com.greenblat.adt.lab1.utils.Arrays;
-import com.greenblat.adt.lab1.utils.Collections;
+import com.greenblat.adt.lab1.collections.utils.Collections;
 import com.greenblat.adt.lab2.utils.PairRun;
 
-import java.util.Optional;
+import java.util.Stack;
 
 
 public class TimSort<T extends Comparable<T>> implements Sort<T> {
-
-    private static final int GALLOPING_VALUE = 7;
 
     private final List<T> arr;
 
@@ -22,103 +17,65 @@ public class TimSort<T extends Comparable<T>> implements Sort<T> {
     }
 
     public void sort() {
-        InsertionSort<T> insertionSort = new InsertionSort<>(arr);
-
         int minRun = calculateMinRun(arr.size());
-        Stack<PairRun> stack = new LinkedList<>();
+        Stack<PairRun> stackForMerge = new java.util.Stack<>();
 
-        // step 1 insertion
-        int start = 0;
-        while (start < arr.size()) {
-            int end = Math.min(start + minRun - 1, arr.size() - 1);
+        int startRun = 0;
+        while (startRun < arr.size()) {
+            int endRun = countRunLengthAndMakeAscendingSequence(startRun, arr.size());
 
-            // reverse
-            boolean needReverse = false;
-            int startDecrease = start;
-            for (int k = start + 1; k < end + 1; k++) {
-                if (arr.get(k).compareTo(arr.get(k - 1)) < 0 && !needReverse) {
-                    startDecrease = k - 1;
-                    needReverse = true;
-                } else if (arr.get(k).compareTo(arr.get(k - 1)) > 0 && needReverse) {
-                    needReverse = false;
-                    reverseList(startDecrease, k);
-                }
+            if (endRun - startRun < minRun) {
+                endRun = Math.min(startRun + minRun - 1, arr.size() - 1);
+                insertionBinarySort(startRun, endRun);
             }
+            stackForMerge.push(new PairRun(startRun, endRun - startRun + 1));
 
-            while (end < arr.size() - 1 && arr.get(end).compareTo(arr.get(end + 1)) < 0) {
-                end++;
-            }
-            insertionSort.insertionSort(start, end);
+            mergeTopElements(stackForMerge);
 
-            stack.push(new PairRun(start, end - start + 1));
+            startRun = endRun + 1;
 
-            start = end + 1;
         }
 
+    }
 
-        // step 2 merging
-        while (!stack.isEmpty()) {
-            PairRun pairRun1 = stack.pop();
-            Optional<PairRun> pairRun2 = stack.isEmpty() ? Optional.empty() : Optional.ofNullable(stack.pop());
-            Optional<PairRun> pairRun3 = stack.isEmpty() ? Optional.empty()  : Optional.ofNullable(stack.pop());
 
-            if (pairRun2.isEmpty()) {
-                break;
-            }
+    private void mergeTopElements(Stack<PairRun> stackForMerge) {
+        
+        while (stackForMerge.size() > 1) {
+            PairRun pairRunX = stackForMerge.pop();
+            int[] infoRunX = {pairRunX.getIndex(), pairRunX.getSize()};
+            PairRun pairRunY = stackForMerge.pop();
+            int[] infoRunY = {pairRunY.getIndex(), pairRunY.getSize()};
 
-            int low;
-            int mid;
-            int high;
-            if (pairRun3.isEmpty()) {
-                low = pairRun2.get().getIndex();
-                high = pairRun1.getSize() + pairRun2.get().getSize() - 1;
-                mid = low + pairRun2.get().getSize();
+            if (stackForMerge.size() > 0) {
+                PairRun pairRunZ = stackForMerge.pop();
+                int[] infoRunZ = {pairRunZ.getIndex(), pairRunZ.getSize()};
+
+                if (infoRunZ[1] <= infoRunY[1] + infoRunX[1]) {
+                    if (infoRunZ[1] < infoRunX[1]) {
+                        mergeWithGallopingMode(pairRunY, pairRunX);
+
+                        stackForMerge.push(pairRunZ);
+                        stackForMerge.push(new PairRun(pairRunY.getIndex(), pairRunY.getSize() + pairRunX.getSize()));
+                    } else {
+                        mergeWithGallopingMode(pairRunZ, pairRunY);
+
+                        stackForMerge.push(new PairRun(pairRunZ.getIndex(), pairRunZ.getSize() + pairRunY.getSize()));
+                        stackForMerge.push(pairRunX);
+                    }
+                } else if (infoRunY[1] <= infoRunX[1]) {
+                    mergeWithGallopingMode(pairRunY, pairRunX);
+
+                    stackForMerge.push(pairRunZ);
+                    stackForMerge.push(new PairRun(pairRunY.getIndex(), pairRunY.getSize() + pairRunX.getSize()));
+                }
             } else {
-                int size1 = pairRun1.getSize();
-                int size2 = pairRun2.get().getSize();
-                int size3 = pairRun3.get().getSize();
+                mergeWithGallopingMode(pairRunY, pairRunX);
 
-                if ((size3 > size2 + size1 && size2 > size1) || size3 > size1) {
-                    low = pairRun2.get().getIndex();
-                    high = pairRun1.getIndex() + size1 - 1;
-                    mid = low + size2;
-                } else {
-                    low = pairRun3.get().getIndex();
-                    high = pairRun2.get().getIndex() + size2 - 1;
-                    mid = low + size3;
-                }
+                stackForMerge.push(new PairRun(pairRunY.getIndex(), pairRunY.getSize() + pairRunX.getSize()));
             }
-            mergeWithGallopingMode(low, mid, high);
-        }
 
-//        while (!stack.isEmpty()) {
-//            PairRun pairRun1 = stack.pop();
-//
-//            int low = 0;
-//            int high = 0;
-//            int mid = 0;
-//            if (stack.size() >= 3) {
-//                PairRun pairRun2 = stack.pop();
-//                PairRun pairRun3 = stack.pop();
-//
-//                if ((pairRun3.getSize() > pairRun2.getSize() + pairRun1.getSize() && pairRun2.getSize() > pairRun1.getSize())
-//                        || (pairRun3.getSize() > pairRun1.getSize())) {
-//                    low = pairRun2.getIndex();
-//                    high = pairRun1.getIndex() + pairRun1.getSize() - 1;
-//                    mid = low + pairRun2.getSize();
-//                } else {
-//                    low = pairRun3.getIndex();
-//                    high = pairRun2.getIndex() + pairRun2.getSize() - 1;
-//                    mid = low + pairRun3.getSize();
-//                }
-//            } else if (stack.size() == 2) {
-//                PairRun pairRun2 = stack.pop();
-//                low = pairRun2.getIndex();
-//                high = pairRun1.getSize() + pairRun2.getSize() - 1;
-//                mid = low + pairRun2.getSize();
-//            }
-//            mergeWithGallopingMode(low, mid, high);
-//        }
+        }
     }
 
 
@@ -131,75 +88,40 @@ public class TimSort<T extends Comparable<T>> implements Sort<T> {
         return n + r;
     }
 
-    private void reverseList(int start, int end) {
-        for (int i = start; i < (start + end) / 2; i++) {
-            T temp = arr.get(i);
-            arr.set(i, arr.get(end - i - 1));
-            arr.set(end - i - 1, temp);
+    private int countRunLengthAndMakeAscendingSequence(int low, int high) {
+        int idx = low + 1;
+        if (arr.get(idx++).compareTo(arr.get(low)) < 0) {
+            while (idx < high && arr.get(idx).compareTo(arr.get(low)) < 0)
+                idx++;
+            Collections.reverseList(arr, low, idx);
+        } else {
+            while (idx < high && arr.get(idx).compareTo(arr.get(idx - 1)) >= 0)
+                idx++;
         }
+
+        return idx - low;
     }
 
-    void mergeWithGallopingMode(int low, int middle, int high) {
+    private void mergeWithGallopingMode(PairRun pairRun1, PairRun pairRun2) {
 
-        T[] leftArray = Collections.copyToArrays(arr, low, middle - low + 1);
-        T[] rightArray = Collections.copyToArrays(arr, middle + 1, high - middle);
-
+        T[] leftArray = Collections.copyToArrays(arr, pairRun1.getIndex(), pairRun1.getSize());
+        T[] rightArray = Collections.copyToArrays(arr, pairRun2.getIndex(), pairRun2.getSize());
 
         int leftSubArrCounter = 0;
         int rightSubArrCounter = 0;
-        int arrCounter = low;
+        int arrCounter = pairRun1.getIndex();
 
-        int countGalloping = 0;
-        boolean changeGallopingMode = false;
-        boolean gallopingMode = false;
-        int a = 0;
         while (leftSubArrCounter < leftArray.length && rightSubArrCounter < rightArray.length) {
-            if (!gallopingMode) {
-                T val;
-                if (leftArray[leftSubArrCounter].compareTo(rightArray[rightSubArrCounter]) <= 0) {
-                    val = leftArray[leftSubArrCounter++];
+            if (leftArray[leftSubArrCounter].compareTo(rightArray[rightSubArrCounter]) <= 0) {
+                int endGalloping = searchEndPointForGalloping(leftArray, leftSubArrCounter, rightArray[rightSubArrCounter]);
+                while (leftSubArrCounter < endGalloping)
+                    arr.set(arrCounter++, leftArray[leftSubArrCounter++]);
 
-                    if (changeGallopingMode) {
-                        countGalloping = 1;
-                        changeGallopingMode = false;
-                    } else {
-                        countGalloping++;
-                    }
-                } else {
-                    val = rightArray[rightSubArrCounter++];
-
-                    if (!changeGallopingMode) {
-                        countGalloping = 1;
-                        changeGallopingMode = true;
-                    } else {
-                        countGalloping++;
-                    }
-                }
-
-                arr.set(arrCounter++, val);
-
-                if (countGalloping >= GALLOPING_VALUE) {
-                    if (changeGallopingMode)
-                        a = Arrays.searchIndexWithBinarySearch(rightArray, rightSubArrCounter, leftArray[leftSubArrCounter]);
-                    else
-                        a = Arrays.searchIndexWithBinarySearch(leftArray, leftSubArrCounter, rightArray[rightSubArrCounter]);
-
-                    gallopingMode = true;
-                }
             } else {
-                if (changeGallopingMode) {
-                    while (rightSubArrCounter < a) {
-                        arr.set(arrCounter++, rightArray[rightSubArrCounter++]);
-                    }
-                } else {
-                    while (leftSubArrCounter < a) {
-                        arr.set(arrCounter++, leftArray[leftSubArrCounter++]);
-                    }
-                }
-                gallopingMode = false;
-                countGalloping = 0;
+                int endGalloping = searchEndPointForGalloping(rightArray, rightSubArrCounter, leftArray[leftSubArrCounter]);
+                while (rightSubArrCounter < endGalloping)
+                    arr.set(arrCounter++, rightArray[rightSubArrCounter++]);
             }
-
         }
 
         while (leftSubArrCounter < leftArray.length) {
@@ -209,8 +131,34 @@ public class TimSort<T extends Comparable<T>> implements Sort<T> {
         while (rightSubArrCounter < rightArray.length) {
             arr.set(arrCounter++, rightArray[rightSubArrCounter++]);
         }
-
     }
-    
+
+    private int searchEndPointForGalloping(T[] arr, int idx, T target) {
+        int gallopValue = 1;
+        while (idx < arr.length) {
+            if (arr[idx].compareTo(target) <= 0) {
+                idx += gallopValue;
+            } else {
+                return idx - gallopValue / 2 + 1;
+            }
+
+            gallopValue *= 2;
+        }
+        return idx - gallopValue / 2 + 1;
+    }
+
+    private void insertionBinarySort(int start, int end) {
+        for (int i = start + 1; i <= end; i++) {
+            int j = i - 1;
+
+            T selected = arr.get(i);
+            int loc = Collections.binarySearch(arr, selected, start, j);
+            while (j >= loc) {
+                arr.set(j + 1, arr.get(j));
+                j--;
+            }
+            arr.set(j + 1, selected);
+        }
+    }
 
 }
