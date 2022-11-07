@@ -36,11 +36,42 @@ public class TimSort<T extends Comparable<T>> implements Sort<T> {
 
         }
 
+        mergeForce(stackForMerge);
+
+    }
+
+    private void mergeForce(Stack<PairRun> stackForMerge) {
+        // Y
+        // X
+        // Z
+
+        while (stackForMerge.size() > 1) {
+            PairRun pairRunX = stackForMerge.pop();
+            PairRun pairRunY = stackForMerge.pop();
+
+            if (stackForMerge.size() > 0) {
+                PairRun pairRunZ = stackForMerge.pop();
+
+                if (pairRunZ.getSize() < pairRunX.getSize()) {
+                    mergeWithGallopingMode(pairRunZ, pairRunY);
+
+                    stackForMerge.push(new PairRun(pairRunZ.getIndex(), pairRunZ.getSize() + pairRunY.getSize()));
+                    stackForMerge.push(pairRunX);
+                } else {
+                    mergeWithGallopingMode(pairRunY, pairRunX);
+
+                    stackForMerge.push(pairRunZ);
+                    stackForMerge.push(new PairRun(pairRunY.getIndex(), pairRunY.getSize() + pairRunX.getSize()));
+                }
+            } else {
+                mergeWithGallopingMode(pairRunY, pairRunX);
+            }
+        }
     }
 
 
     private void mergeTopElements(Stack<PairRun> stackForMerge) {
-        
+
         while (stackForMerge.size() > 1) {
             PairRun pairRunX = stackForMerge.pop();
             int[] infoRunX = {pairRunX.getIndex(), pairRunX.getSize()};
@@ -53,29 +84,74 @@ public class TimSort<T extends Comparable<T>> implements Sort<T> {
 
                 if (infoRunZ[1] <= infoRunY[1] + infoRunX[1]) {
                     if (infoRunZ[1] < infoRunX[1]) {
-                        mergeWithGallopingMode(pairRunY, pairRunX);
-
-                        stackForMerge.push(pairRunZ);
-                        stackForMerge.push(new PairRun(pairRunY.getIndex(), pairRunY.getSize() + pairRunX.getSize()));
-                    } else {
                         mergeWithGallopingMode(pairRunZ, pairRunY);
 
                         stackForMerge.push(new PairRun(pairRunZ.getIndex(), pairRunZ.getSize() + pairRunY.getSize()));
                         stackForMerge.push(pairRunX);
+                    } else {
+                        mergeWithGallopingMode(pairRunY, pairRunX);
+
+                        stackForMerge.push(pairRunZ);
+                        stackForMerge.push(new PairRun(pairRunY.getIndex(), pairRunY.getSize() + pairRunX.getSize()));
                     }
                 } else if (infoRunY[1] <= infoRunX[1]) {
                     mergeWithGallopingMode(pairRunY, pairRunX);
 
                     stackForMerge.push(pairRunZ);
                     stackForMerge.push(new PairRun(pairRunY.getIndex(), pairRunY.getSize() + pairRunX.getSize()));
+                } else {
+                    stackForMerge.push(pairRunZ);
+                    stackForMerge.push(pairRunY);
+                    stackForMerge.push(pairRunX);
+
+                    break;
                 }
-            } else {
+            } else if (infoRunY[1] <= infoRunX[1]) {
                 mergeWithGallopingMode(pairRunY, pairRunX);
 
                 stackForMerge.push(new PairRun(pairRunY.getIndex(), pairRunY.getSize() + pairRunX.getSize()));
+            } else {
+                stackForMerge.push(pairRunY);
+                stackForMerge.push(pairRunX);
+
+                break;
+
             }
 
         }
+
+
+
+//            if (n > 0 && pairRunZ.getSize() <= infoRunY[1] + infoRunX[1]) {
+//                    if (pairRunZ.getSize() < infoRunX[1]) {
+//                        mergeWithGallopingMode(pairRunZ, pairRunY);
+//
+//                        stackForMerge.push(new PairRun(pairRunZ.getIndex(), pairRunZ.getSize() + pairRunY.getSize()));
+//                        stackForMerge.push(pairRunX);
+//                    } else {
+//                        mergeWithGallopingMode(pairRunY, pairRunX);
+//
+//                        stackForMerge.push(pairRunZ);
+//                        stackForMerge.push(new PairRun(pairRunY.getIndex(), pairRunY.getSize() + pairRunX.getSize()));
+//                    }
+//
+//            } else if (infoRunY[1] <= infoRunX[1]) {
+//
+//
+//                mergeWithGallopingMode(pairRunY, pairRunX);
+//
+//                if (n > 0) stackForMerge.push(pairRunZ);
+//                stackForMerge.push(new PairRun(pairRunY.getIndex(), pairRunY.getSize() + pairRunX.getSize()));
+//            } else {
+//                if (n > 0) stackForMerge.push(pairRunZ);
+//                stackForMerge.push(pairRunY);
+//                stackForMerge.push(pairRunX);
+//
+//                break;
+//
+//            }
+
+
     }
 
 
