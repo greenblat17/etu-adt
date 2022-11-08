@@ -5,3 +5,6 @@
 
 ## Лабараторная работа №2: Сортировки
 Задача: https://gravel-battery-806.notion.site/d7072ee22e254dbcaa1e96b8751d2872
+
+## Лабараторная работа №2: Деревья
+Задача: https://gravel-battery-806.notion.site/b14d438831e74a5dadf9b066b1e2285c
