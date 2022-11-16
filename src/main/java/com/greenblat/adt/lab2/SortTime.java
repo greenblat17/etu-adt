@@ -7,6 +7,7 @@ import com.greenblat.adt.lab2.sorts.MergeSort;
 import com.greenblat.adt.lab2.sorts.Sort;
 import com.greenblat.adt.lab2.sorts.TimSort;
 
+import java.util.Collections;
 import java.util.Random;
 
 public class SortTime {
@@ -23,6 +24,15 @@ public class SortTime {
 //        timeOfSoringList(list, 10000, timSort);
 //        timeOfSoringList(list, 100000, timSort);
         timeOfSoringList(list, 1000000, timSort);
+        Random random = new Random();
+        java.util.List<Integer> list1 = new java.util.ArrayList<>();
+        for (int i = 0; i < 1000000; i++) {
+            list1.add(random.nextInt(100));
+        }
+        long start = System.currentTimeMillis();
+        Collections.sort(list1);
+        long end = System.currentTimeMillis();
+        System.out.println("jdk timsort: " + (end - start));
 
     }
 
