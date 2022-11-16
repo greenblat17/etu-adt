@@ -32,7 +32,6 @@ public class LinkedList<E> implements List<E>, Stack<E> {
     @Override
     public E push(E item) {
         add(item, 0);
-        size++;
 
         return item;
     }

@@ -21,6 +21,8 @@ public class AVLTree<T extends Comparable<T>> {
                 stack.push(node.getRight());
         }
 
+        depthSearchValuesLNR(avlNode);
+
         return avlNode;
     }
 
