@@ -7,6 +7,8 @@ import com.greenblat.adt.lab1.collections.Stack;
 
 public class AVLTree<T extends Comparable<T>> {
 
+    private TreeNode<T> root;
+
     public TreeNode<T>  makeAVLTree(com.greenblat.adt.lab3.tree.binary.TreeNode<T> binaryTree) {
         TreeNode<T> avlNode = null;
         Stack<com.greenblat.adt.lab3.tree.binary.TreeNode<T>> stack = new LinkedList<>();
@@ -26,6 +28,10 @@ public class AVLTree<T extends Comparable<T>> {
         return avlNode;
     }
 
+    private TreeNode<T> insert(T value) {
+        return insert(value, root);
+    }
+
 
     public TreeNode<T> insert(T value, TreeNode<T> node) {
         if (node == null) {
@@ -40,10 +46,10 @@ public class AVLTree<T extends Comparable<T>> {
             return node;
 
         updatedHeight(node);
-        return rotation(node);
+        return balancing(node);
     }
 
-    private TreeNode<T> rotation(TreeNode<T> node) {
+    private TreeNode<T> balancing(TreeNode<T> node) {
         int diffHeight = node != null ? calculateHeight(node.getLeft()) - calculateHeight(node.getRight()) : 0;
 
         if (diffHeight > 1) {
@@ -93,6 +99,10 @@ public class AVLTree<T extends Comparable<T>> {
         return leftNode;
     }
 
+    private void delete(T value) {
+        root = delete(value, root);
+    }
+
     public TreeNode<T> delete(T value, TreeNode<T> node) {
         if (node == null) {
             throw new IllegalStateException();
@@ -113,12 +123,13 @@ public class AVLTree<T extends Comparable<T>> {
             while (tmp.getRight() != null) {
                 tmp = tmp.getRight();
             }
+
             node.setData(tmp.getData());
-            node.setLeft(delete(value, node.getLeft()));
+            node.setLeft(delete(node.getData(), node.getLeft()));
         }
 
         updatedHeight(node);
-        return rotation(node);
+        return balancing(node);
     }
 
     public TreeNode<T> search(T value, TreeNode<T> node) {

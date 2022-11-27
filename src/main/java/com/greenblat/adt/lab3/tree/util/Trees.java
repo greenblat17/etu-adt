@@ -4,14 +4,15 @@ import com.greenblat.adt.lab1.collections.LinkedList;
 import com.greenblat.adt.lab1.collections.Stack;
 import com.greenblat.adt.lab3.tree.binary.TreeNode;
 import com.greenblat.adt.lab3.tree.exception.IncorrectBraceException;
+import com.greenblat.adt.lab3.tree.exception.IncorrectSymbolException;
 
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.util.Scanner;
 
-public class TreeFunctions {
+public class Trees {
 
-    public static TreeNode<Integer> parseSequence(String fileName) throws IncorrectBraceException {
+    public static TreeNode<Integer> parseSequence(String fileName) throws IncorrectBraceException, IncorrectSymbolException {
         char[] sequence = readFile(fileName).toCharArray();
         Stack<TreeNode<Integer>> stack = new LinkedList<>();
 
@@ -20,7 +21,7 @@ public class TreeFunctions {
 
         int idx = 1;
         char last = '(';
-        int countOpenBranckets = 0;
+        int countOpenBrackets = 0;
         while (idx < sequence.length - 1) {
             if (Character.isDigit(sequence[idx])) {
                 if (last != '(')
@@ -36,7 +37,7 @@ public class TreeFunctions {
 
                 last = '1';
             } else if (sequence[idx] == ')') {
-                if (last == '(' || --countOpenBranckets < 0)
+                if (last == '(' || --countOpenBrackets < 0)
                     throw new IncorrectBraceException("Sequence of brackets is incorrect");
 
 
@@ -51,9 +52,11 @@ public class TreeFunctions {
 
                 last = ')';
             } else {
+                if (sequence[idx] != '(')
+                    throw new IncorrectSymbolException("Incorrect symbol in sequence: " + sequence[idx]);
                 if (last == '(')
                     throw new IncorrectBraceException("Sequence of brackets is incorrect");
-                countOpenBranckets++;
+                countOpenBrackets++;
                 last = sequence[idx];
             }
             idx++;
