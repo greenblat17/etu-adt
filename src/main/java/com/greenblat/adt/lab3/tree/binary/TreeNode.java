@@ -1,18 +1,18 @@
-package com.greenblat.adt.lab3.binary_tree;
+package com.greenblat.adt.lab3.tree.binary;
 
 public class TreeNode<T> {
-    private final T data;
+    private final T value;
     private TreeNode<T> left;
     private TreeNode<T> right;
 
-    public TreeNode(T data, TreeNode<T> left, TreeNode<T> right) {
-        this.data = data;
+    public TreeNode(T value, TreeNode<T> left, TreeNode<T> right) {
+        this.value = value;
         this.left = left;
         this.right = right;
     }
 
-    public TreeNode(T data) {
-        this.data = data;
+    public TreeNode(T value) {
+        this.value = value;
     }
 
     public void setLeft(TreeNode<T> left) {
@@ -31,8 +31,8 @@ public class TreeNode<T> {
         return right;
     }
 
-    public T getData() {
-        return data;
+    public T getValue() {
+        return value;
     }
 
 }

@@ -1,4 +1,4 @@
-package com.greenblat.adt.lab3.avl_tree;
+package com.greenblat.adt.lab3.tree.avl;
 
 public class TreeNode<T extends Comparable<T>> {
 
@@ -9,6 +9,12 @@ public class TreeNode<T extends Comparable<T>> {
 
     public TreeNode(T data) {
         this.data = data;
+    }
+
+    public TreeNode(T data, TreeNode<T> left, TreeNode<T> right) {
+        this.data = data;
+        this.left = left;
+        this.right = right;
     }
 
     public T getData() {
@@ -42,4 +48,5 @@ public class TreeNode<T extends Comparable<T>> {
     public void setHeight(int height) {
         this.height = height;
     }
+
 }
