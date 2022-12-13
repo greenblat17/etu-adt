@@ -2,6 +2,8 @@ package com.greenblat.adt.lab1.collections;
 
 import com.greenblat.adt.lab1.collections.utils.Arrays;
 
+import java.util.Objects;
+
 /**
  * Изначальный список: []
  * Вызвал метод add в цикле for 10 раз: [ 0 1 2 3 4 5 6 7 8 9 ]
@@ -31,6 +33,18 @@ public class ArrayList<E> implements List<E> {
 
     public ArrayList() {
         values = new Object[DEFAULT_CAPACITY];
+    }
+
+    public ArrayList(E[] elements) {
+        this();
+
+        if (elements.length < values.length) {
+            values = Arrays.createNewArrayWithCopy(values);
+        }
+
+        for (E element : elements) {
+            add(element);
+        }
     }
 
     @Override
@@ -143,7 +157,7 @@ public class ArrayList<E> implements List<E> {
 
     @Override
     public void clear() {
-        values =  new Object[DEFAULT_CAPACITY];
+        values = new Object[DEFAULT_CAPACITY];
         size = 0;
     }
 
@@ -160,5 +174,34 @@ public class ArrayList<E> implements List<E> {
         return sb.append(values[size - 1]).append("]").toString();
     }
 
+    @Override
+    public boolean equals(Object o) {
+        if (o == this) {
+            return true;
+        }
+
+        if (!(o instanceof List<?> other)) {
+            return false;
+        }
+
+        if (size != other.size()) {
+            return false;
+        }
+
+        for (int i = 0; i < size; i++) {
+            if (!values[i].equals(other.get(i))) {
+                return false;
+            }
+        }
+
+        return true;
+    }
+
+    @Override
+    public int hashCode() {
+        int result = Objects.hash(DEFAULT_CAPACITY, size);
+        result = 31 * result + java.util.Arrays.hashCode(values);
+        return result;
+    }
 }
 
