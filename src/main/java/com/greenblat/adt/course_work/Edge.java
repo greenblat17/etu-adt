@@ -1,6 +1,6 @@
 package com.greenblat.adt.course_work;
 
-public class Edge{
+public class Edge implements Comparable<Edge> {
 
     private final int firstVertex;
     private final int secondVertex;
@@ -31,5 +31,14 @@ public class Edge{
                 ", secondVertex=" + secondVertex +
                 ", weight=" + weight +
                 '}';
+    }
+
+    public String getVerticesString() {
+        return ((char) (firstVertex + 65)) + " " + ((char) (secondVertex + 65));
+    }
+
+    @Override
+    public int compareTo(Edge o) {
+        return Integer.compare(this.weight, o.weight);
     }
 }

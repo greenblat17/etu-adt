@@ -16,8 +16,9 @@ public class DisjointSetUnion implements Union {
 
     @Override
     public void makeSet(int v) {
-        parents[v] = v;
-        size[v] =1;
+        throw new UnsupportedOperationException();
+//        parents[v] = v;
+//        size[v] =1;
     }
 
     @Override
@@ -36,8 +37,6 @@ public class DisjointSetUnion implements Union {
         }
     }
 
-
-    // Эвристика
     @Override
     public int find(int v) {
         if (v == parents[v])

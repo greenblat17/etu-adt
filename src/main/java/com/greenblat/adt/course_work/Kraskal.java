@@ -1,16 +1,17 @@
 package com.greenblat.adt.course_work;
 
 import com.greenblat.adt.course_work.union.DisjointSetUnion;
+import com.greenblat.adt.lab1.collections.ArrayList;
+import com.greenblat.adt.lab1.collections.List;
+import com.greenblat.adt.lab2.sorts.MergeSort;
 
 import java.io.BufferedReader;
 import java.io.IOException;
-import java.util.ArrayList;
 import java.util.Comparator;
-import java.util.List;
 
 public class Kraskal {
 
-    private  List<String> vertices;
+    private List<String> vertices;
     private List<Edge> edges;
 
     public Kraskal(BufferedReader reader) throws IOException {
@@ -24,33 +25,30 @@ public class Kraskal {
         for (int first = 0; first < vertices.size(); first++) {
             List<String> valueOfEdges = getValuesOfTree(reader);
             for (int second = first + 1; second < valueOfEdges.size(); second++) {
-                edges.add(new Edge(first, second, Integer.parseInt(valueOfEdges.get(second))));
+                int weight = Integer.parseInt(valueOfEdges.get(second));
+                if (weight > 0)
+                    edges.add(new Edge(first, second, weight));
             }
 
         }
     }
 
-    public void run() {
-        int sumWeight = 0;
-        List<Edge> result = new ArrayList<>();
-        edges.sort(Comparator.comparingInt(Edge::getWeight));
+    public List<Edge> run() {
+        List<Edge> tree = new ArrayList<>();
+        new MergeSort<>(edges).sort();
         DisjointSetUnion set = new DisjointSetUnion(vertices.size());
-        for (Edge edge : edges) {
+        for (int i = 0; i < edges.size(); i++) {
+            Edge edge = edges.get(i);
             if (set.find(edge.getFirstVertex()) != set.find(edge.getSecondVertex())) {
-                sumWeight += edge.getWeight();
                 set.union(edge.getFirstVertex(), edge.getSecondVertex());
-                result.add(edge);
+                tree.add(edge);
             }
-
         }
-
-        System.out.println(result);
-        System.out.println(sumWeight);
-
+        return tree;
     }
 
     private List<String> getValuesOfTree(BufferedReader reader) throws IOException {
-        String[] values = reader.readLine().split(" ");
+        String[] values = reader.readLine().split("\\s+");
         List<String> vertices = new ArrayList<>();
         for (String value : values) {
             if (!value.equals(""))
